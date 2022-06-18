@@ -1,0 +1,40 @@
+{
+  "name": "node2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "axios-retry": "^3.2.4",
+    "base64-to-image": "^1.0.2",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "csurf": "^1.11.0",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-rate-limit": "^6.4.0",
+    "express-session": "^1.17.2",
+    "fs-jetpack": "^4.2.0",
+    "helmet": "^4.6.0",
+    "http-errors": "^1.8.1",
+    "jimp": "^0.16.1",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^2.1.0",
+    "lodash": "^4.17.21",
+    "mongoose": "^5.12.7",
+    "multer": "^1.4.3",
+    "mysql2": "^2.3.3",
+    "nodemailer": "^6.7.1",
+    "session-file-store": "^1.5.0",
+    "validator": "^13.6.0",
+    "xss": "^1.0.13"
+  }
+}
