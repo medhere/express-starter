@@ -35,11 +35,11 @@ app.use(helmet());
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use('/', express.static(process.cwd()+'/public',{index:'index.html'})); // serves index.html for ./
-app.use(cookieparser(process.env.SECRET_KEY));
+app.use(cookieparser(process.env.CRYPTO_KEY));
 app.use(session({
-    store: new FileStore({secret:process.env.SECRET_KEY, path:process.cwd()+'/server/sessions'}),
+    store: new FileStore({secret:process.env.CRYPTO_KEY, path:process.cwd()+'/server/sessions'}),
     name:'sessid',
-    secret:process.env.SECRET_KEY,
+    secret:process.env.CRYPTO_KEY,
     resave:false,
     saveUninitialized: false,
     cookie: { secure: false, httpOnly:true, sameSite:true, signed:true }

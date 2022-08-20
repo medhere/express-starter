@@ -54,7 +54,7 @@ const checkAuthPermissions = (userid, ...perms) => {
 exports.checkAuth = (...permissions) =>{
     return function (req,res,next) {
         try { 
-            req.auth = jwt.verify(req.headers["authorization"].split(" ")[1] || req.cookies.auth, process.env.SECRET_KEY)
+            req.auth = jwt.verify(req.headers["authorization"].split(" ")[1] || req.cookies.auth, process.env.CRYPTO_KEY)
             // TODO: compare jwt expiry and reload perms from database in req.auth.permissions as array
             if(!permissions.includes(req.auth.role)){
                 return res.status(403).send("Cannot Access This resource")
