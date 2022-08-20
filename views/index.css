@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .btn{@apply bg-blue-600 m-2 py-1 rounded-3xl hover:bg-blue-700 hover:-translate-y-1 transition-all duration-500 text-white font-medium active:scale-75}
+}
+
+
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/css2?family=Anybody:ital,wght@1,300&family=Asap+Condensed:ital@1&family=Lato:ital@1&family=League+Gothic&family=Oswald:wght@300&display=swap');
+*{font-family: 'Asap Condensed', sans-serif;}
+
+/* @import url('https://fonts.googleapis.com/css2?family=Anybody:ital,wght@1,300&family=Lato:ital@1&family=League+Gothic&family=Oswald:wght@300&display=swap');
+* {font-family: 'Oswald', sans-serif;} */
+
+/*Firefox */
+* { scrollbar-width: thin; scrollbar-color: blue white; }
+/*Chrome, Edge, and Safari */
+*::-webkit-scrollbar { width: 8px; }
+*::-webkit-scrollbar-track { background: white; }
+*::-webkit-scrollbar-thumb { background-color: blue; border-radius: 20px; border: 2px solid white; }

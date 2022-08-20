@@ -1,6 +1,6 @@
-// var escapeHtml = require('escape-html')
 
-route.map = function(a, route){
+const routeMapper = (routemap) =>{
+  return routemap.map((a, route) => {
     route = route || '';
     for (var key in a) {
       switch (typeof a[key]) {
@@ -9,20 +9,21 @@ route.map = function(a, route){
           app[key](route, a[key]);break;
       }
     }
-};
+  })
+}
   
   var users = {
-    list: function(req, res){res.send('user list');},
-    get: function(req, res){  res.send('user ' +  escapeHtml(req.params.uid))},
-    delete: function(req, res){ res.send('delete users'); }
+    list: function(req, res){res.send('user list') },
+    get: function(req, res){  res.send('user ' +  req.params.uid)},
+    delete: function(req, res){ res.send('delete users') }
   };
   
   var pets = {
-    list: function(req, res){res.send('user ' + escapeHtml(req.params.uid) + '\'s pets')},
-    delete: function(req, res){ res.send('delete ' + escapeHtml(req.params.uid) + '\'s pet ' + escapeHtml(req.params.pid))}
+    list: function(req, res){res.send('user ' + req.params.uid + '\'s pets' )},
+    delete: function(req, res){ res.send('delete ' + req.params.uid + '\'s pet ' + req.params.pid )}
   };
   
-  app.map({
+  routeMapper({
     '/users': {
       get: users.list,
       delete: users.delete,

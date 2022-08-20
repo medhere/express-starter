@@ -1,39 +1,42 @@
+const Validator = require('validatorjs');
+const { conn } = require('../app/config');
+const fs = require('fs-jetpack')
 
-const newUser = (req, res) => {
-
+exports.m = async(req,res) =>{
+    try{ res.send(await conn('')) } 
+    catch(err){ res.status(400).send(err.code) }    
 }
 
-const findUser = (req, res) => {
-    
-
-}
 
 //form example
 const from = (req,res) => {
-    if(req.files?.file){
-    var files=req.files.file
-        if(Array.isArray(files)){
-            files.map((file,index)=>{
-                var { originalname, destination, filename, size }=file,
-                path=destination+'/'+filename, [name,ext]=originalname.split('.')
-        
-                // fs.unlink(file.path,(err) => console.log(err));        
-            })
-        }else{
-            var { originalname, destination, filename, size }=files,
-            path=destination+'/'+filename, [name,ext]=originalname.split('.')
+    console.log(req.files)
+    //if multer.any()
+    // files=req.files
 
-            // fs.unlink(files.path,(err) => console.log(err));
+    // if multer.fields([{name:'documents',maxCount:1}, ...])
+    if(req.files?.documents){
+        var files=req.files.documents
+            if(Array.isArray(files)){
+                files.map((file,index)=>{
+                    var { originalname, destination, filename, size, mimetype } = file
+                    var thisfile=destination+'/'+filename 
+                    var name =originalname.split('.')[0]
+                    var ext = mimetype.split('/')[1]
+                    fs.moveAsync(thisfile, process.cwd() + '/server/uploads/files' + ext, {overwrite: true})
+                    fs.remove(thisfile)
+                })
+            }else{
+                var { originalname, destination, filename, size } = file
+                var thisfile=destination+'/'+filename 
+                var name =originalname.split('.')[0]
+                var ext = mimetype.split('/')[1]
+                fs.moveAsync(path, process.cwd() + '/server/uploads/files' + ext, {overwrite: true})
+                fs.remove(thisfile)
+            }
+            res.send('recieved')
+        }else{
+            res.send('no file sent')
         }
-        res.send('recieved')
-    }else{
-        res.send('no file sent')
-    }
 
 }
-
-
-module.exports =  {
-    newUser,
-    findUser
-};

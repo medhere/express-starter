@@ -38,7 +38,7 @@ const checkRole = (userid,role) => {
     }
 }
 
-const checkPermissions = (userid, ...perms) => {
+const checkAuthPermissions = (userid, ...perms) => {
     return function (req,res,next) {
         //write a where in clause using params as [...perms]
         conn.select('*').from('user_permissions').where('userid', userid).first().then(rows => {
@@ -50,6 +50,35 @@ const checkPermissions = (userid, ...perms) => {
     }
 }
 
-module.exports =  {
 
-};
+const checkAuth = (...permissions) =>{
+    const perms = [...permissions]
+    return function (req,res,next) {
+        try { 
+            req.auth = jwt.verify(req.headers["authorization"].split(" ")[1] || req.cookies.auth, process.env.SECRET_KEY)
+            // if (!req.auth.permissions.includes(role)) for perms array
+            // compare jwt expiry and reload perms from database in req.auth.permissions as array
+            if(permission !='' && permission !== req.auth.permissions){
+                return res.status(403).send("Cannot Access This resource")
+            }
+        } 
+        catch (err) {
+            delete req.user;
+            return res.status(401).send("Invalid Token")
+        }
+        return next()
+    }
+
+}
+
+
+function rolesToken(role) {
+    return function(req, res, next) {
+      var decoded = jwt.decode(req.token);
+      if (!decoded.permissions.includes(role)) {
+        res.json("Not Permitted");
+      } else {
+        next();
+      }
+    };
+  }
