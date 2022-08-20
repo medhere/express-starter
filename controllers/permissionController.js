@@ -51,25 +51,23 @@ const checkAuthPermissions = (userid, ...perms) => {
 }
 
 
-const checkAuth = (...permissions) =>{
-    const perms = [...permissions]
+exports.checkAuth = (...permissions) =>{
     return function (req,res,next) {
         try { 
             req.auth = jwt.verify(req.headers["authorization"].split(" ")[1] || req.cookies.auth, process.env.SECRET_KEY)
-            // if (!req.auth.permissions.includes(role)) for perms array
-            // compare jwt expiry and reload perms from database in req.auth.permissions as array
-            if(permission !='' && permission !== req.auth.permissions){
+            // TODO: compare jwt expiry and reload perms from database in req.auth.permissions as array
+            if(!permissions.includes(req.auth.role)){
                 return res.status(403).send("Cannot Access This resource")
             }
         } 
         catch (err) {
-            delete req.user;
-            return res.status(401).send("Invalid Token")
+            delete req.auth;
+            return res.status(401).send("Invalid")
         }
         return next()
     }
-
 }
+
 
 
 function rolesToken(role) {
@@ -81,4 +79,6 @@ function rolesToken(role) {
         next();
       }
     };
-  }
+}
+
+

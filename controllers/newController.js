@@ -3,6 +3,16 @@ const { conn } = require('../app/config');
 const fs = require('fs-jetpack')
 
 exports.m = async(req,res) =>{
+    // let validation = new Validator(req.body,{
+    //     email: 'required|email',
+    // })
+
+    // if(validation.fails()){
+    //     res.status(401).send(validation.errors.all())
+    // }else{
+
+    // }
+
     try{ res.send(await conn('')) } 
     catch(err){ res.status(400).send(err.code) }    
 }
@@ -23,7 +33,7 @@ const from = (req,res) => {
                     var thisfile=destination+'/'+filename 
                     var name =originalname.split('.')[0]
                     var ext = mimetype.split('/')[1]
-                    fs.moveAsync(thisfile, process.cwd() + '/server/uploads/files' + ext, {overwrite: true})
+                    fs.moveAsync(thisfile, process.cwd() + '/uploads/files' + ext, {overwrite: true})
                     fs.remove(thisfile)
                 })
             }else{
@@ -31,7 +41,7 @@ const from = (req,res) => {
                 var thisfile=destination+'/'+filename 
                 var name =originalname.split('.')[0]
                 var ext = mimetype.split('/')[1]
-                fs.moveAsync(path, process.cwd() + '/server/uploads/files' + ext, {overwrite: true})
+                fs.moveAsync(path, process.cwd() + '/uploads/files' + ext, {overwrite: true})
                 fs.remove(thisfile)
             }
             res.send('recieved')

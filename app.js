@@ -34,7 +34,7 @@ app.use(compression());
 app.use(helmet());
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
-app.use('/', express.static(process.cwd()+'/build',{index:'index.html'})); // serves index.html for ./
+app.use('/', express.static(process.cwd()+'/public',{index:'index.html'})); // serves index.html for ./
 app.use(cookieparser(process.env.SECRET_KEY));
 app.use(session({
     store: new FileStore({secret:process.env.SECRET_KEY, path:process.cwd()+'/server/sessions'}),
@@ -45,10 +45,9 @@ app.use(session({
     cookie: { secure: false, httpOnly:true, sameSite:true, signed:true }
 }));
 
+
 app.use('/api',require('./routes/routes'))
-app.get('*',(req,res)=>{
-  res.sendFile(process.cwd()+'/build/index.html')
-})
+// app.get('*',(req,res)=>{ res.sendFile(process.cwd()+'/public/index.html') })
 
 https.createServer({
   key: fs.read(process.cwd()+'/certs/key.pem'),

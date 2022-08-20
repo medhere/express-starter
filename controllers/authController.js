@@ -2,66 +2,8 @@ const { conn, mailer } = require('../app/config');
 const Validator = require('validatorjs');
 const jwt = require('jsonwebtoken')
 const jp=require('fs-jetpack');
-const { UID } = require('../app/crypto');
+const { UID } = require('../app/uid');
 const md5 = require('md5');
-
-
-exports.contactUs = async(req,res) =>{
-    try{ 
-        mailer.sendMail({
-            from:'',
-            sender:'',
-            to:'',
-            subject:'',
-            html:``
-        })
-        console.log(req.body)
-        res.send('Sucessful') 
-    } 
-    catch(err){ res.status(400).send(err.code) }
-}
-
-exports.contacts = async(req,res) =>{
-    try {
-        res.send(await conn('users').where({user_type: 'admin'}).orderBy('id','asc').first().select('phonenumber','email'))
-    } catch(err){
-        res.send(err.code)
-    }
-}
-
-exports.forgotPassword = (req,res) => {
-    const { email } = req.body
-    conn('users').update({reset:UID(15)}).where({email: email})
-        .then(()=>{ 
-            res.send('Reset Mail Sent Succesfully')
-            mailer.sendMail({
-                from:'',
-                sender:'',
-                to:'',
-                subject:'',
-                html:``
-            })    
-        })
-        .catch(()=> res.status(401).send("You cannot reset your password. Contact admin!"))
-}
-
-exports.resetPassword = async(req,res) =>{
-    let validation = new Validator(req.body,{
-        password: 'required|min:8',
-        repeat_password: 'required|same:password'
-    })
-    
-    if(validation.fails()){
-        res.status(401).send(validation.errors.all())
-    }
-    else{
-        delete req.body.repeat_password;
-        req.body.password = md5(req.body.password)
-        conn('users').update(req.body).where({reset:req.params.id}) 
-        .then(() => res.send('Password Reset Successfully'))
-        .catch(err => res.status(400).send(err))
-    }    
-}
 
 
 exports.userSignin = async(req,res) => {
@@ -90,60 +32,6 @@ exports.userSignout = (req,res) =>{
     res.send('Sign Out successful')
 }
 
-exports.userSignup = (req,res) =>{
-    var active = UID(15)
-
-    let validation = new Validator(req.body,{
-        firstname: 'required',
-        lastname: 'required',
-        email: 'required|email',
-        gender: 'required',
-        phonenumber: 'required|min:11',
-        address: 'required',
-        password: 'required|min:6',
-        repeat_password: 'required|same:password'
-    })
-
-    if(validation.fails()){
-        res.status(401).send(validation.errors.all())
-    }else{
-        req.body.password = md5(req.body.password)
-        conn('users').where({email:req.body.email}).orWhere({phonenumber:req.body.phonenumber}).then((data)=>{
-            if(data.length > 0){
-                console.log(data)
-                res.status(400).send('User already exists')
-            }else{
-                delete req.body.repeat_password
-                conn('users').insert({...req.body, active:active, created_at: new Date()})
-                .then(() => {
-                    res.send('Successful Signed Up! Mail sent to user mailbox')
-                    mailer.sendMail({
-                        from:'',
-                        sender:'',
-                        to:'',
-                        subject:'',
-                        html:``
-                    })
-                })
-                .catch(err => res.status(400).send(err))
-            }
-        }).catch(err => res.status(400).send(err))
-    }
-}
-
-exports.confirmUser = async(req,res) =>{
-    try{ await conn('users').update({active: '',email: req.params.email}).where({active: req.params.active})
-        res.send('Your Account Has Been Activated') 
-        mailer.sendMail({
-            from:'',
-            sender:'',
-            to:'',
-            subject:'',
-            html:``
-        })
-    } 
-    catch(err){ res.status(400).send(err.code) }
-}
 
 exports.checkAuth = (...permissions) =>{
     return function (req,res,next) {
