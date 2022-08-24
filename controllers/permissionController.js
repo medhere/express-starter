@@ -1,4 +1,4 @@
-const { conn } = require('../app/databaseConnection')
+const { conn } = require('../app/config')
 
 const getUserPermissions = (userid) => {
     return function (req,res,next) {
