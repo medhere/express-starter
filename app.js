@@ -24,16 +24,16 @@ const rateLimit = require('express-rate-limit').rateLimit({
 // SETUP
 app.settings.env === 'production' && app.disable('verbose errors')
 app.set('view engine','ejs');
-app.set('views', process.cwd()+'/server/views')
+app.set('views', process.cwd()+'/views')
 app.set('trust proxy',1);
 
 app.use(logger('dev'));
 app.use(rateLimit);
-app.use(cors({ origin: '*', methods:'GET,POST,PATCH,DELETE', credentials: false}))
+app.use(cors({ origin: '*', methods:'GET,POST,PATCH,DELETE,OPTIONS', credentials: false}))
 app.use(compression());
 app.use(helmet());
-app.use(express.urlencoded({extended:true}));
-app.use(express.json());
+app.use(express.urlencoded({limit:1024*1024*0.5, extended:true}));
+app.use(express.json({limit:1024*1024*0.5}));
 app.use('/', express.static(process.cwd()+'/public',{index:'index.html'})); // serves index.html for ./
 app.use(cookieparser(process.env.CRYPTO_KEY));
 app.use(session({

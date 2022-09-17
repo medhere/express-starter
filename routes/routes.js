@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { checkAuth } = require('../controllers/permissionController');
+const { checkAuth } = require('../middleware/permissions');
 const newRoutes = require('./newRoutes')
 
 router.use('/', checkAuth('admin','user'), newRoutes);

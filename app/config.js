@@ -5,7 +5,7 @@ exports.mailer=require('nodemailer').createTransport({
 });
 
 exports.multer  = require('multer')({
-    dest: process.cwd()+'/uploads/tmp',
+    dest: process.cwd()+'/server/uploads/tmp',
     limits:{ fileSize: 5 * 1024 * 1024, files: 5, parts:5, },
     preservePath: true,
     // fileFilter: (req, file, callback) => {
@@ -21,9 +21,10 @@ exports.conn = require('knex')({
       port : 3306,
       user : 'root',
       password : '',
-      database : ''
+      database : 'estate'
     }
 });
+require('knex-paginate').attachPaginate();
 
 
 

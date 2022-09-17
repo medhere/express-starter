@@ -5,7 +5,10 @@
   "main": "app.js",
   "scripts": {
     "server": "nodemon",
-    "db": "prisma studio",
+    "db-push": "prisma db push",
+    "db-pull": "prisma db pull",
+    "db-start": "prisma studio",
+    "db-seed": "prisma db seed",
     "css": "npx tailwindcss -i ./views/index.css -o ./public/style.css --watch",
     "dev": "concurrently --restart-tries 3  \"npm run server\" \"npm run css\""
   },

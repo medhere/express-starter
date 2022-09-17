@@ -1,4 +1,28 @@
 const { conn } = require('../app/config')
+const jwt = require('jsonwebtoken')
+
+/* A function that is used to check if a user is authenticated. It takes the request and response
+object as parameters. */
+
+
+exports.checkAuth = (...permissions) =>{
+    return function (req,res,next) {
+        try { 
+            req.auth = jwt.verify(req.headers["authorization"].split(" ")[1], process.env.CRYPTO_KEY)
+            if(permissions.length === 0 && req.auth.role_id){
+                return next()
+            }else if(!permissions.includes(req.auth.role_id)){
+                return res.status(403).send("Cannot Access This resource")
+            }
+        } 
+        catch (err) {
+            delete req.auth;
+            return res.status(401).send("Invalid")
+        }
+        return next()
+    }
+}
+
 
 const getUserPermissions = (userid) => {
     return function (req,res,next) {
@@ -49,25 +73,6 @@ const checkAuthPermissions = (userid, ...perms) => {
         })
     }
 }
-
-
-exports.checkAuth = (...permissions) =>{
-    return function (req,res,next) {
-        try { 
-            req.auth = jwt.verify(req.headers["authorization"].split(" ")[1] || req.cookies.auth, process.env.CRYPTO_KEY)
-            // TODO: compare jwt expiry and reload perms from database in req.auth.permissions as array
-            if(!permissions.includes(req.auth.role)){
-                return res.status(403).send("Cannot Access This resource")
-            }
-        } 
-        catch (err) {
-            delete req.auth;
-            return res.status(401).send("Invalid")
-        }
-        return next()
-    }
-}
-
 
 
 function rolesToken(role) {

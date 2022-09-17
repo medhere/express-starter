@@ -7,9 +7,32 @@ datasource db {
   url      = env("PRISMA_DATABASE_URL")
 }
 
+model can_give_permissions {
+  id      Int     @id @default(autoincrement())
+  user_id String? @db.VarChar(50)
+  perm_id String? @db.VarChar(50)
+}
+
+model permissions {
+  id    Int     @id @default(autoincrement())
+  type  String? @db.VarChar(50)
+  value String? @db.VarChar(50)
+}
+
+model user_permissions {
+  id      Int     @id @default(autoincrement())
+  user_id String? @db.VarChar(50)
+  perm_id String? @db.VarChar(50)
+}
 
 model users {
-  id          Int     @id @default(autoincrement())
-  user_type   String? @default("user") @db.VarChar(50)
-  created_at  String? @default("") @db.VarChar(50)
+  id            Int     @id @default(autoincrement())
+  username      String? @db.VarChar(50)
+  userpass      String? @db.VarChar(50)
+  supervisor_id String? @db.VarChar(50)
+  firstname     String? @db.VarChar(50)
+  lastname      String? @db.VarChar(50)
+  email         String? @db.VarChar(50)
+  created_at    String? @db.VarChar(50)
+  updated_at    String? @db.VarChar(50)
 }
