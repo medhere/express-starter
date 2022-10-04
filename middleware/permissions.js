@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken')
 /* A function that is used to check if a user is authenticated. It takes the request and response
 object as parameters. */
 
-
 exports.checkAuth = (...permissions) =>{
     return function (req,res,next) {
         try { 
@@ -13,13 +12,14 @@ exports.checkAuth = (...permissions) =>{
                 return next()
             }else if(!permissions.includes(req.auth.role_id)){
                 return res.status(403).send("Cannot Access This resource")
+            }else{
+                return next()
             }
         } 
         catch (err) {
             delete req.auth;
-            return res.status(401).send("Invalid")
+            return res.status(401).send("Unauthorized Access")
         }
-        return next()
     }
 }
 
