@@ -35,6 +35,8 @@ app.use(helmet());
 app.use(express.urlencoded({limit:1024*1024*0.5, extended:true}));
 app.use(express.json({limit:1024*1024*0.5}));
 app.use('/', express.static(process.cwd()+'/public',{index:'index.html'})); // serves index.html for ./
+app.use('/app', express.static(process.cwd()+'/build',{index:'index.html'}));
+app.use('/static-uploads', express.static(process.cwd()+'/server/uploads')); 
 app.use(cookieparser(process.env.CRYPTO_KEY));
 app.use(session({
     store: new FileStore({secret:process.env.CRYPTO_KEY, path:process.cwd()+'/server/sessions'}),
