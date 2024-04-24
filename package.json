@@ -6,10 +6,24 @@
   "scripts": {
     "start": "node --trace-warnings app.js",
     "server": "nodemon",
+    
     "db-push": "prisma db push",
     "db-pull": "prisma db pull",
     "db-start": "prisma studio",
     "db-seed": "prisma db seed",
+
+    "db-push-mongo": "prisma db push --schema=./prisma/mongo-schema.prisma",
+    "db-pull-mongo": "prisma db pull --schema=./prisma/mongo-schema.prisma",
+    "db-start-mongo": "prisma studio --schema=./prisma/mongo-schema.prisma",
+    "db-seed-mongo": "prisma db seed --schema=./prisma/mongo-schema.prisma",
+    "db-generate-mongo": "prisma db generate --schema=./prisma/mongo-schema.prisma",
+
+    "db-push-mysql": "prisma db push --schema=./prisma/mysql-schema.prisma",
+    "db-pull-mysql": "prisma db pull --schema=./prisma/mysql-schema.prisma",
+    "db-start-mysql": "prisma studio --schema=./prisma/mysql-schema.prisma",
+    "db-seed-mysql": "prisma db seed --schema=./prisma/mysql-schema.prisma",
+    "db-generate-mysql": "prisma db generate --schema=./prisma/mysql-schema.prisma",
+    
     "css": "npx tailwindcss -i ./views/index.css -o ./public/style.css --watch",
     "dev": "concurrently --restart-tries 3  \"npm run server\" \"npm run css\""
   },
