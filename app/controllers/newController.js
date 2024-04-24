@@ -1,5 +1,4 @@
 const Validator = require('validatorjs');
-const { conn } = require('../app/config');
 const fs = require('fs-jetpack')
 
 exports.m = async(req,res) =>{
@@ -13,8 +12,9 @@ exports.m = async(req,res) =>{
 
     // }
 
-    try{ res.send(await conn('')) } 
-    catch(err){ res.status(400).send(err.code) }    
+    // try{ res.send(await conn('')) } 
+    // catch(err){ res.status(400).send(err.code) } 
+    res.send('we are live');   
 }
 
 

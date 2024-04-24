@@ -1,10 +1,10 @@
-const { conn, mailer } = require('../app/config');
 const Validator = require('validatorjs');
 const jwt = require('jsonwebtoken')
 const jp=require('fs-jetpack');
 const { UID } = require('../app/uid');
-const md5 = require('md5');
+const bcrypt = require('bcrypt');
 const roles = require('../middleware/roles');
+const { knex } = require('../../config/database');
 
 
 exports.userSignin = async(req,res) => {
@@ -15,11 +15,11 @@ exports.userSignin = async(req,res) => {
     if(remember_me === true) maxAge = 31
 
     // TODO add id as signup
-    conn('users').select('uuid','role','firstname','lastname','estate_id')
+    knex('users').select('uuid','role','firstname','lastname','estate_id')
     .where({email:id, password:password, reset:'', active:'1'}).first()
         .then(async (data)=>{
             if(data!==undefined){
-                var house = await conn('house_data').where({user_id:data.uuid}).first()
+                var house = await knex('house_data').where({user_id:data.uuid}).first()
                 var auth = jwt.sign(
                     { 
                         id:data.uuid, 
@@ -42,6 +42,37 @@ exports.userSignin = async(req,res) => {
             }
         })
         .catch( err => res.status(401).send('Error: '+err))
+
+
+
+
+
+        // if (!user) throw new HELPER.BadRequestException(MESSAGES.ERROR.LOGIN.USERNAME);
+
+        // const isMatch = await bcrypt.verifyPassword(payload.password, user.password);
+        // if (!isMatch) throw new HELPER.BadRequestException(MESSAGES.ERROR.LOGIN.WRONG_PASS);
+    
+        // const accessToken = jwt.generateAccessToken({
+        //     id: user.id,
+        //     email: user.email,
+        //     role: "",
+        // });
+    
+        // const refreshToken = jwt.generateRefreshToken({
+        //     id: user.id,
+        //     email: user.email,
+        //     role: "",
+        // });
+    
+        // return HELPER.serviceResponse(true, HTTP_CODES.OK, MESSAGES.LOGIN_SUCCESS, {
+        //     id: user.id,
+        //     role: user.role,
+        //     email: user.email,
+        //     accessToken,
+        //     refreshToken,
+        // });
+    
+
 }
 
 
@@ -49,7 +80,7 @@ exports.getUserPermissions = async(req,res) =>{
     try{
         const auth = jwt.verify(req.headers["authorization"].split(" ")[1], process.env.CRYPTO_KEY)
         res.send('no perms')
-        // conn('user_permissions').join('permissions','user_permissions.perm_id','permissions.id').where({'user_permissions.user_id':auth.id})
+        // knex('user_permissions').join('permissions','user_permissions.perm_id','permissions.id').where({'user_permissions.user_id':auth.id})
         // .select('user_permissions.id','user_permissions.perm_id','permissions.type','permissions.value')
         // .then(perms =>{ res.send(perms) })
         // .catch((err)=>res.status(404).send('Error: '+err))
@@ -66,7 +97,7 @@ exports.userSignout = (req,res) =>{
 
 exports.forgotPassword = (req,res) =>{
     const random_id = UID(10)
-    conn('users').update({reset:random_id}).where({email:req.body.email})
+    knex('users').update({reset:random_id}).where({email:req.body.email})
         .then(async(data)=> {
             await mailer.sendMail({
                 from:'no-reply@estatemanagerservices.com',
@@ -88,7 +119,7 @@ exports.resetPassword = (req,res) =>{
     if(validation.fails()){
         res.status(404).send({form_error:validation.errors.all()})
     }else{
-        conn('users').update({ password:md5(req.params.new_password) }).where({ password:md5(req.params.old_password)}) 
+        knex('users').update({ password:md5(req.params.new_password) }).where({ password:md5(req.params.old_password)}) 
             .then(data => res.send('Success'))
             .catch(err => res.status(400).send("Contact Admin: "+err))
     }
