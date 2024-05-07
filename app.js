@@ -1,6 +1,6 @@
 require('dotenv').config({ path: process.cwd() + '/.env' });
 const express = require('express'),
-  app = express(), port = process.env.PORT || 8080;
+  app = express(), port = process.env.PORT || 8000;
 require('express-async-errors');
 const https = require('https'), http = require('http')
 const morgan = require('morgan');

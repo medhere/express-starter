@@ -13,22 +13,14 @@ module.exports = (io, socket) => {
         console.log(`disconnected due to ${reason}`);
     });
 
-    const createOrder = (payload) => {
-        // ...
+    const message = (data, callback) => {
+        console.log('Received data:', data);
+        socket.emit('foo', 'got it lol')
+        callback('test callback')
     }
-
-    const readOrder = (orderId, callback) => {
-        // ...
-    }
-
-    socket.on("order:create", createOrder);
-    socket.on("order:read", readOrder);
 
     //get emitted event
-    socket.on('someEvent', (data) => {
-        console.log('Received data:', data);
-        // socket.emit
-    });
+    socket.on('message', message);
 
 
     //send

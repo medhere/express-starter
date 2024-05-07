@@ -10,7 +10,10 @@ module.exports = (server) => {
       skipMiddlewares: true,
     },
     connectTimeout: 100000,
-
+    // serveClient: false,
+    cors: {
+      origin: "*"
+    }
   });
 
   //middleware
