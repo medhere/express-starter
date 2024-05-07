@@ -1,6 +1,6 @@
 require('dotenv').config({ path: process.cwd() + '/.env' });
 const express = require('express'),
-  app = express(), port = process.env.PORT || 8777;
+  app = express(), port = process.env.PORT || 8080;
 require('express-async-errors');
 const https = require('https'), http = require('http')
 const morgan = require('morgan');
@@ -15,7 +15,6 @@ const fs = require('fs-jetpack');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 const sanitizer = require("perfect-express-sanitizer");
-
 const socketIo = require('./app/websockets/socketio_init');
 const { HELPER } = require('./helpers');
 const { failure } = require('./utils/handlers');
@@ -45,7 +44,7 @@ app.use(cors({
   methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
   credentials: false,
   optionsSuccessStatus: 204
-}))
+}));
 app.use(helmet());
 app.use(sanitizer.clean({ xss: true, noSql: true, sql: true, level: 5, }));
 app.use(hpp());
@@ -82,9 +81,7 @@ app.use(cookieparser(process.env.CRYPTO_KEY));
 app.use('/static-uploads', express.static(process.cwd() + '/server/uploads'));
 app.use(require('./routes/routes'))
 
-
 //error handling
-
 /* to handle the error*/
 app.use((err, req, res, next) => {
   if (!err) return next;
@@ -92,6 +89,7 @@ app.use((err, req, res, next) => {
 });
 app.use(HELPER.ERROR_HANDLER);
 app.use(HELPER.ROUTE_HANDLER);
+
 process.on("unhandledRejection", (err) => {
   console.log(err);
   // process.exit(1);
@@ -101,19 +99,25 @@ process.on("uncaughtException", (err) => {
   // process.exit(1);
 });
 
-
 //init server
-server = https.createServer({
+const https_server = https.createServer({
   key: fs.read(process.cwd() + '/certs/key.pem'),
   cert: fs.read(process.cwd() + '/certs/cert.pem'),
   dhparam: fs.read(process.cwd() + '/certs/dh-strong.pem')
 }, app);
+const http_server =  http.createServer(app)
+const server = process.env.HTTPS ? https_server : http_server
 
 //socket io init
 socketIo(server);
 
 //start express
-server.listen(port, () => { console.log(`HTTPS Server listening on port ${port}!`) });
+server.listen(port, () => { 
+  process.env.HTTPS ? 
+  console.log(`HTTPS Server listening on port ${port}!`) :
+  console.log(`HTTP Server listening on port ${port}!`)
+});
+
 server.on('error', function (error) {
   if (error.syscall !== 'listen') throw error;
 
@@ -134,5 +138,4 @@ server.on('error', function (error) {
 
 });
 
-// http.createServer(app).listen(port+1, () => {console.log(`HTTP Server listening on port ${port+1}!`)});;
 
