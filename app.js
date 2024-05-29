@@ -66,7 +66,7 @@ app.use(express.json({
 //   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 // }))
 app.use(session({
-  store: new FileStore({ secret: process.env.CRYPTO_KEY, path: process.cwd() + '/server/sessions' }),
+  store: new FileStore({ secret: process.env.CRYPTO_KEY, path: process.cwd() + '/resources/sessions' }),
   name: 'sessid',
   secret: process.env.CRYPTO_KEY,
   resave: false,
@@ -78,7 +78,7 @@ app.use(cookieparser(process.env.CRYPTO_KEY));
 //Routing
 // app.use('/', express.static(process.cwd() + '/public', { index: 'index.html' })); // serves index.html for ./
 // app.use('/app', express.static(process.cwd() + '/build', { index: 'index.html' }));
-app.use('/static-uploads', express.static(process.cwd() + '/server/uploads'));
+app.use('/static-uploads', express.static(process.cwd() + '/resources/uploads'));
 app.use(require('./routes/routes'))
 
 //error handling
